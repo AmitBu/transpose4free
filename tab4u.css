@@ -1,0 +1,15 @@
+#field-container {
+    background: #287abe;
+    margin: 2px 0;
+    padding:4px 0;
+    color: #FFF;
+    border-radius: 4px;
+    font-weight: bold;
+    display: block;
+}
+
+#field-container h3 {
+    font-size: 16px;
+    padding: 0 0 4px 0;
+    margin: 0;
+}
