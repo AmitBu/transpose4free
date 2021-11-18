@@ -29,6 +29,21 @@ function createTransposeField() {
     document.querySelector('#shpa').prepend(container);
 }
 
+/**
+ * Wrapper for chords transpose that support chords with '/'
+ * @param {string} chord 
+ * @param {float} amount 
+ * @returns string of parsed chord(s)
+ */
+function parseAndTranspose(chord, amount) {
+    const parsed = chord
+        .split('/')
+        .map(p => transposeChord(p, amount));
+
+    // return transposeChord(p, amount);
+    return parsed.join('/');
+}
+
 function transposeTab4u(amount) {
     const chordsSelector = '.chord_info + span';
 
@@ -38,9 +53,7 @@ function transposeTab4u(amount) {
     }
 
     elementList.forEach((e, i) => {
-        e.innerText = amount !== 0 ? transposeChord(originalChordList[i], amount) : originalChordList[i]
-
-            ;
+        e.innerText = amount !== 0 ? parseAndTranspose(originalChordList[i], amount) : originalChordList[i];
     });
 }
 
