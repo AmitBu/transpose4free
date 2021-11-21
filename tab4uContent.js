@@ -44,12 +44,43 @@ function parseAndTranspose(chord, amount) {
     return parsed.join('/');
 }
 
-function transposeTab4u(amount) {
-    const chordsSelector = '.chord_info + span';
+/**
+ * Used for chords that are missing from normal selector
+ * It wraps the non-wrapped chords to be used in the original algorithm
+ */
+function findAndWrapMissingChords(originalChords = originalChordList) {
+    const elementList = document.querySelectorAll('.chords');
 
-    const elementList = document.querySelectorAll(chordsSelector);
+    elementList.forEach((ele) => {
+        const text = ele.innerText.trim();
+        // Split & trim found chords
+        const eleChords = text.replace(/\xA0/g, ' ').split(' ').filter(r => r).map(r => r.trim());
+        // Remove chords that exists in `originalChords`
+        const missingChords = eleChords.filter(c => !originalChords.includes(c));
+        // Replace the original text chords version with wrapped one (to be used in main selector)
+        missingChords.forEach(m => {
+            ele.innerHTML = ele.innerHTML.replaceAll(`&nbsp;${m}`, `&nbsp;<div style="position: absolute; display: none;" class="chord_info"></div><span>${m}</span>`)
+        });
+    })
+}
+
+function selectAllChordElements() {
+    const chordsSelector = '.chords .chord_info + span';
+    return document.querySelectorAll(chordsSelector);
+}
+
+function selectAllChordTexts(elementList = selectAllChordElements()) {
+    return [...elementList].map(e => e.innerText);
+}
+
+function transposeTab4u(amount) {
+    const elementList = selectAllChordElements();
+    // Runs only on first call
     if (originalChordList === null) {
-        originalChordList = [...elementList].map(e => e.innerText);
+        const chordsBeforeWrap = selectAllChordTexts(elementList);
+        findAndWrapMissingChords(chordsBeforeWrap);
+        // Update chords list with missing chords after wrapping missing ones
+        originalChordList = selectAllChordTexts();
     }
 
     elementList.forEach((e, i) => {
