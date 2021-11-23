@@ -3,6 +3,7 @@ let originalChordList = null;
 
 function onLoad() {
     createTransposeField();
+    loadTab4uChords();
 }
 
 function createTransposeField() {
@@ -73,8 +74,12 @@ function selectAllChordTexts(elementList = selectAllChordElements()) {
     return [...elementList].map(e => e.innerText);
 }
 
-function transposeTab4u(amount) {
+/**
+ * Loads all tab4u chords into list (originalChordList)
+ */
+function loadTab4uChords() {
     const elementList = selectAllChordElements();
+
     // Runs only on first call
     if (originalChordList === null) {
         const chordsBeforeWrap = selectAllChordTexts(elementList);
@@ -82,6 +87,14 @@ function transposeTab4u(amount) {
         // Update chords list with missing chords after wrapping missing ones
         originalChordList = selectAllChordTexts();
     }
+}
+
+/**
+ * Goes over the chords element list and updates element text after transpose
+ * @param {float} amount 
+ */
+function transposeTab4u(amount) {
+    const elementList = selectAllChordElements();
 
     elementList.forEach((e, i) => {
         e.innerText = amount !== 0 ? parseAndTranspose(originalChordList[i], amount) : originalChordList[i];
